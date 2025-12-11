@@ -1,0 +1,28 @@
+{
+  "name": "lost-midas-mechanism",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@codex-data/sdk": "^2.0.0",
+    "@zoralabs/protocol-sdk": "^0.4.1",
+    "alchemy-sdk": "^3.6.5",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.1",
+    "fs-extra": "^11.1.1",
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
+    "viem": "^1.18.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.8.10",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
