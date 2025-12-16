@@ -15,6 +15,9 @@ exports.CONFIG = {
     TOKEN_LOST_MIDAS: '0xf43a43d8f462e2bba7fb76a1359b8722be09cfa9', // Token to Buy
     TOKEN_ZORA: '0x1111111111166b7fe7bd91427724b487980afc69', // Token used to pay (Protocol Rewards)
     BURN_ADDRESS: '0x000000000000000000000000000000000000dEaD',
+    BASE_ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    BASE_USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    BASE_WETH: '0x4200000000000000000000000000000000000006',
     // Secrets
     PRIVATE_KEY: process.env.PRIVATE_KEY,
     // Ensure we only use the key part if a full URL is provided

@@ -9,6 +9,7 @@ const viem_1 = require("viem");
 const accounts_1 = require("viem/accounts");
 const chains_1 = require("viem/chains");
 const config_1 = require("../config");
+const sdk_1 = require("@codex-data/sdk");
 const ERC20_ABI = [
     {
         constant: true,
@@ -56,26 +57,45 @@ class SwapService {
             chain: chains_1.base,
             transport: (0, viem_1.http)(config_1.CONFIG.RPC_URL)
         });
+        if (!config_1.CONFIG.CODEX_API_KEY) {
+            throw new Error("CODEX_API_KEY is missing in environment variables.");
+        }
+        this.codex = new sdk_1.Codex(config_1.CONFIG.CODEX_API_KEY);
     }
     async executeSwap(amountInETH, dryRun = false) {
         try {
-            // Step 1: Get $ZORA Price
-            const priceResponse = await axios_1.default.get('https://base.api.0x.org/swap/v1/price', {
-                headers: { '0x-api-key': config_1.CONFIG.ZERO_EX_API_KEY },
-                params: {
-                    sellToken: config_1.CONFIG.TOKEN_ZORA,
-                    buyToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC
-                    sellAmount: (0, viem_1.parseUnits)('1', 18).toString()
-                }
+            // Step 1: Get $ZORA Price using Codex
+            const priceQuery = `
+          query TokenPrice($address: String!, $networkId: Int!) {
+              getTokenPrices(
+                  inputs: [
+                      { address: $address, networkId: $networkId }
+                  ]
+              ) {
+                  priceUsd
+              }
+          }
+        `;
+            const priceResponse = await this.codex.send(priceQuery, {
+                address: config_1.CONFIG.TOKEN_ZORA,
+                networkId: 8453
             });
-            const zoraPriceUSD = parseFloat(priceResponse.data.price);
+            const zoraPriceUSD = priceResponse.getTokenPrices?.[0]?.priceUsd || 0;
             if (!zoraPriceUSD || zoraPriceUSD === 0) {
-                console.error('Failed to fetch ZORA price');
+                console.error('Failed to fetch ZORA price from Codex');
                 return null;
             }
-            const zoraAmountToSell = (amountInETH / zoraPriceUSD);
+            console.log(`Current ZORA Price (Codex): $${zoraPriceUSD}`);
+            console.log(`Buyback Target Amount: $${amountInETH} USD`);
+            const zoraAmountToSell = (amountInETH / zoraPriceUSD) / 200;
             const sellAmountBigInt = (0, viem_1.parseUnits)(zoraAmountToSell.toFixed(18), 18);
             console.log(`Swap: Selling ${zoraAmountToSell} $ZORA ($${amountInETH} USD) for $LOSTMIDAS`);
+            console.log({
+                sellToken: config_1.CONFIG.TOKEN_ZORA,
+                buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                sellAmount: sellAmountBigInt.toString(),
+                takerAddress: this.account.address,
+            });
             // 2. Get Quote
             const quoteResponse = await axios_1.default.get('https://base.api.0x.org/swap/v1/quote', {
                 headers: { '0x-api-key': config_1.CONFIG.ZERO_EX_API_KEY },
@@ -83,7 +103,7 @@ class SwapService {
                     sellToken: config_1.CONFIG.TOKEN_ZORA,
                     buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
                     sellAmount: sellAmountBigInt.toString(),
-                    takerAddress: this.account.address
+                    takerAddress: this.account.address,
                 }
             });
             const quote = quoteResponse.data;

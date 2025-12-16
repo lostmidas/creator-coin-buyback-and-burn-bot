@@ -1,5 +1,6 @@
-import { Network, Alchemy, AssetTransfersCategory, AssetTransfersResponse } from 'alchemy-sdk';
+import { Network, Alchemy } from 'alchemy-sdk';
 import { Codex } from '@codex-data/sdk';
+import { setApiKey, getProfileCoins } from '@zoralabs/coins-sdk';
 import { CONFIG } from '../config';
 
 interface TokenInfo {
@@ -20,6 +21,12 @@ export class VolumeService {
         throw new Error("CODEX_API_KEY is missing in environment variables.");
     }
     
+    if (CONFIG.ZORA_API_KEY) {
+        setApiKey(CONFIG.ZORA_API_KEY);
+    } else {
+        console.warn("ZORA_API_KEY is missing. Zora SDK calls might fail.");
+    }
+
     this.alchemy = new Alchemy({
         apiKey: CONFIG.ALCHEMY_API_KEY,
         network: Network.BASE_MAINNET,
@@ -32,8 +39,41 @@ export class VolumeService {
   async getCreatorCoins(): Promise<TokenInfo[]> {
     console.log(`Fetching coins for creator: ${CONFIG.CREATOR_ADDRESS}...`);
     
-    // We can fetch metadata for the known token using Alchemy
-    // Note: If this fails repeatedly, we can hardcode or use Codex metadata
+    try {
+        const response = await getProfileCoins({
+            identifier: CONFIG.CREATOR_ADDRESS,
+            count: 50,
+            chainIds: [CONFIG.CHAIN_ID]
+        });
+
+        if (!response.data) {
+            console.error("Zora SDK Error:", (response as any).error);
+            return this.getFallbackCoin();
+        }
+
+        const edges = response.data.profile?.createdCoins?.edges || [];
+        
+        if (edges.length === 0) {
+             console.log("No coins found via Zora SDK. Using fallback.");
+             return this.getFallbackCoin();
+        }
+
+        const tokens: TokenInfo[] = edges.map(edge => ({
+            address: edge.node.address,
+            name: edge.node.name,
+            symbol: edge.node.symbol
+        }));
+
+        console.log(`Found ${tokens.length} coins via Zora SDK.`);
+        return tokens;
+
+    } catch (e) {
+        console.warn('Could not fetch coins from Zora SDK, using defaults.', e);
+        return this.getFallbackCoin();
+    }
+  }
+
+  private async getFallbackCoin(): Promise<TokenInfo[]> {
     try {
         const metadata = await this.alchemy.core.getTokenMetadata(CONFIG.TOKEN_LOST_MIDAS);
         return [
@@ -44,7 +84,6 @@ export class VolumeService {
           }
         ];
     } catch (e) {
-        console.warn('Could not fetch metadata from Alchemy, using defaults.');
         return [
             {
                 address: CONFIG.TOKEN_LOST_MIDAS,
@@ -55,69 +94,50 @@ export class VolumeService {
     }
   }
 
-  // 2. Fetch Cumulative Volume using Alchemy + Codex Price
+  // 2. Fetch Cumulative Volume using Codex Bars (Historical Trade Volume)
+  // This aggregates DEX volume in USD at the time of trade.
   async getCumulativeVolumeUSD(tokenAddress: string): Promise<number> {
     try {
-      // A. Get Total Token Transfer Volume
-      let totalTokensTransferred = 0;
-      let pageKey: string | undefined = undefined;
-      
-      do {
-          const res: AssetTransfersResponse = await this.alchemy.core.getAssetTransfers({
-            fromBlock: "0x0",
-            contractAddresses: [tokenAddress],
-            category: [AssetTransfersCategory.ERC20],
-            excludeZeroValue: true,
-            pageKey: pageKey
-          });
-          
-          for (const transfer of res.transfers) {
-              if (transfer.value) {
-                  totalTokensTransferred += transfer.value;
-              }
-          }
-          pageKey = res.pageKey;
-          
-      } while (pageKey);
+      const now = Math.floor(Date.now() / 1000);
+      const startTime = 1748736000; // June 1, 2025 (Project Inception)
 
-      console.log(`Total Transfer Volume (Tokens): ${totalTokensTransferred}`);
-
-      // B. Get Current Token Price (USD) via Codex API
-      // Query: 
-      // networkId: 8453 (Base)
-      // address: tokenAddress
-      
-      const priceQuery = `
-        query TokenPrice($address: String!, $networkId: Int!) {
-            getTokenPrices(
-                inputs: [
-                    { address: $address, networkId: $networkId }
-                ]
+      const volumeQuery = `
+        query TokenVolume($symbol: String!, $from: Int!, $to: Int!) {
+            getTokenBars(
+                symbol: $symbol
+                resolution: "1D"
+                from: $from
+                to: $to
+                currencyCode: USD
             ) {
-                priceUsd
+                volume
             }
         }
       `;
 
-      // Define expected response type for proper type checking
-      interface TokenPricesResponse {
-        getTokenPrices: {
-          priceUsd: number;
-          timestamp: string;
-          address: string;
-        }[];
+      interface TokenBarsResponse {
+        getTokenBars: {
+          volume: (string | null)[];
+        } | null;
       }
 
-      const response = await this.codex.send<TokenPricesResponse>(priceQuery, {
-          address: tokenAddress,
-          networkId: 8453
+      console.log(`Fetching historical volume for ${tokenAddress}...`);
+
+      const response = await this.codex.send<TokenBarsResponse>(volumeQuery, {
+          symbol: `${tokenAddress}:8453`, // Address:NetworkId for Base
+          from: startTime,
+          to: now
       });
+
+      const volumes = response.getTokenBars?.volume || [];
       
-      const priceUSD = response.getTokenPrices?.[0]?.priceUsd || 0;
-      
-      console.log(`Current Price (Codex): $${priceUSD}`);
-      
-      const totalVolumeUSD = totalTokensTransferred * priceUSD;
+      // Sum up the volume (strings to float)
+      const totalVolumeUSD = volumes.reduce((acc, val) => {
+          if (!val) return acc;
+          return acc + parseFloat(val);
+      }, 0);
+
+      console.log(`Total Historical Volume (USD) for ${tokenAddress}: $${totalVolumeUSD}`);
       return totalVolumeUSD;
 
     } catch (error: any) {
