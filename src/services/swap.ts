@@ -115,13 +115,17 @@ export class SwapService {
       });
 
         // 2. Get Quote
-        const quoteResponse = await axios.get('https://base.api.0x.org/swap/v1/quote', {
-            headers: { '0x-api-key': CONFIG.ZERO_EX_API_KEY },
+        const quoteResponse = await axios.get('https://api.0x.org/swap/allowance-holder/quote', {
+            headers: { 
+                '0x-api-key': CONFIG.ZERO_EX_API_KEY, 
+                '0x-version': 'v2' 
+            },
             params: {
+                chainId: 8453,
                 sellToken: CONFIG.TOKEN_ZORA,
                 buyToken: CONFIG.TOKEN_LOST_MIDAS,
                 sellAmount: sellAmountBigInt.toString(),
-                takerAddress: this.account.address,
+                taker: this.account.address
             }
         });
 
@@ -193,6 +197,7 @@ export class SwapService {
     } catch (error: any) {
         if (error.response) {
             console.error('Swap API Error:', error.response.data);
+            console.log(error.response.data.data.details);
         } else {
             console.error('Swap Error:', error.message);
         }
