@@ -1,0 +1,90 @@
+{
+  "coins": {
+    "0x1f76d7c7207a873aabe35edb0b016dfc5519adfc": {
+      "cumulativeVolumeUSD": 4.132194304422,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x6c57d6b19cce37a111ccfbe67f47a2f10bc394fd": {
+      "cumulativeVolumeUSD": 3.2241774614329994,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x93f1575ed726486ab96724daf8dbaffa97fb4d60": {
+      "cumulativeVolumeUSD": 3.3814083926169998,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x776edbb5b31733e44041496501147a9836a16e54": {
+      "cumulativeVolumeUSD": 2.809088170123,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x8e0048b8cb5162beb8a2ebbf947cb4539cb9f1c0": {
+      "cumulativeVolumeUSD": 4.138331292274,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x7d58b7ad15af1f27d1384121d662bbfba53de550": {
+      "cumulativeVolumeUSD": 2.863698066243,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x774451a216fab1eac6d85062d6b007de4bd683a4": {
+      "cumulativeVolumeUSD": 4.4566581875489995,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x08304660d720ca04bfbf5ff098bc0e072e93b4a3": {
+      "cumulativeVolumeUSD": 4.777078937915,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x73d78092bd156c6400194de1eca09d7cd2255670": {
+      "cumulativeVolumeUSD": 2.7862958987333997,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x4465a5e2cd3b8214002a5d7c0274f986b46024b2": {
+      "cumulativeVolumeUSD": 0.262339083476,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0xbdadb428c65b412872002b30d90ae28e16378050": {
+      "cumulativeVolumeUSD": 1.699433124964,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0xac7dda354814737f911d220ec22e67f46c84a659": {
+      "cumulativeVolumeUSD": 0.209481986156,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x047c14379c3481de9722b573f35f1290db6b141f": {
+      "cumulativeVolumeUSD": 0.376250299941,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0xdd5ae6099debcda7b93406f5b43c8c74fddf121a": {
+      "cumulativeVolumeUSD": 99.53808627792999,
+      "lastProcessedVolumeUSD": 99.53808627792999,
+      "totalBuybackETH": 0
+    },
+    "0xd7cde203425e1ae47f7c25de045548cd63eacf67": {
+      "cumulativeVolumeUSD": 2.131832199806,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x7dc2af09ec904bc951d05c85b54f5436f6dbfdb3": {
+      "cumulativeVolumeUSD": 2.070558930099,
+      "lastProcessedVolumeUSD": 0,
+      "totalBuybackETH": 0
+    },
+    "0x27a786745bd21d5d7a8f7eb01f2d29250a19e416": {
+      "cumulativeVolumeUSD": 31.044460984737,
+      "lastProcessedVolumeUSD": 31.044460984737,
+      "totalBuybackETH": 0
+    }
+  },
+  "lastRunTimestamp": 1767814925740
+}

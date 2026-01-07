@@ -9,7 +9,8 @@ dotenv_1.default.config();
 exports.CONFIG = {
     // Network: Base
     CHAIN_ID: 8453,
-    RPC_URL: process.env.BASE_RPC_URL || 'https://mainnet.base.org',
+    RPC_URL: process.env.BASE_RPC_URL ||
+        (process.env.ALCHEMY_API_KEY ? `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY.replace(/https?:\/\/.*\/v2\//, '')}` : 'https://mainnet.base.org'),
     // Wallets & Tokens
     CREATOR_ADDRESS: '0xd0dfa0a873e5bcb1b52d42866042ef2859558985',
     TOKEN_LOST_MIDAS: '0xf43a43d8f462e2bba7fb76a1359b8722be09cfa9', // Token to Buy

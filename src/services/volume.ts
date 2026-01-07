@@ -123,6 +123,9 @@ export class VolumeService {
 
       console.log(`Fetching historical volume for ${tokenAddress}...`);
 
+      // Add a small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const response = await this.codex.send<TokenBarsResponse>(volumeQuery, {
           symbol: `${tokenAddress}:8453`, // Address:NetworkId for Base
           from: startTime,

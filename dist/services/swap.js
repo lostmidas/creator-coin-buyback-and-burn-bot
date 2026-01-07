@@ -10,6 +10,7 @@ const accounts_1 = require("viem/accounts");
 const chains_1 = require("viem/chains");
 const config_1 = require("../config");
 const sdk_1 = require("@codex-data/sdk");
+const protocol_sdk_1 = require("@zoralabs/protocol-sdk");
 const ERC20_ABI = [
     {
         constant: true,
@@ -90,6 +91,30 @@ class SwapService {
             const zoraAmountToSell = (amountInETH / zoraPriceUSD) / 200;
             const sellAmountBigInt = (0, viem_1.parseUnits)(zoraAmountToSell.toFixed(18), 18);
             console.log(`Swap: Selling ${zoraAmountToSell} $ZORA ($${amountInETH} USD) for $LOSTMIDAS`);
+            // --- NEW STEP: WITHDRAW FROM ZORA WALLET ---
+            console.log(`Checking withdrawals for Zora Wallet: ${config_1.CONFIG.CREATOR_ADDRESS}...`);
+            if (!dryRun) {
+                try {
+                    const { parameters } = await (0, protocol_sdk_1.withdrawRewards)({
+                        withdrawFor: config_1.CONFIG.CREATOR_ADDRESS,
+                        claimSecondaryRoyalties: true,
+                        account: this.account.address,
+                        publicClient: this.publicClient,
+                    });
+                    console.log('Sending Withdraw Transaction...');
+                    const withdrawHash = await this.walletClient.writeContract(parameters);
+                    console.log(`Withdraw TX Hash: ${withdrawHash}`);
+                    await this.publicClient.waitForTransactionReceipt({ hash: withdrawHash });
+                    console.log('Withdraw confirmed.');
+                }
+                catch (e) {
+                    console.warn(`Withdraw failed or no rewards to withdraw: ${e.message}`);
+                    // Continue to swap, as we might already have balance
+                }
+            }
+            else {
+                console.log('[Dry Run] Would withdraw rewards from Zora Wallet to Privy Wallet.');
+            }
             console.log({
                 sellToken: config_1.CONFIG.TOKEN_ZORA,
                 buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
@@ -97,13 +122,17 @@ class SwapService {
                 takerAddress: this.account.address,
             });
             // 2. Get Quote
-            const quoteResponse = await axios_1.default.get('https://base.api.0x.org/swap/v1/quote', {
-                headers: { '0x-api-key': config_1.CONFIG.ZERO_EX_API_KEY },
+            const quoteResponse = await axios_1.default.get('https://api.0x.org/swap/allowance-holder/quote', {
+                headers: {
+                    '0x-api-key': config_1.CONFIG.ZERO_EX_API_KEY,
+                    '0x-version': 'v2'
+                },
                 params: {
+                    chainId: 8453,
                     sellToken: config_1.CONFIG.TOKEN_ZORA,
                     buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
                     sellAmount: sellAmountBigInt.toString(),
-                    takerAddress: this.account.address,
+                    taker: this.account.address
                 }
             });
             const quote = quoteResponse.data;
@@ -168,6 +197,7 @@ class SwapService {
         catch (error) {
             if (error.response) {
                 console.error('Swap API Error:', error.response.data);
+                console.log(error.response.data.data.details);
             }
             else {
                 console.error('Swap Error:', error.message);
