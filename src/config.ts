@@ -11,7 +11,7 @@ export const CONFIG = {
   
   // Wallets & Tokens
   CREATOR_ADDRESS: '0xd0dfa0a873e5bcb1b52d42866042ef2859558985' as `0x${string}`,
-  TOKEN_LOST_MIDAS: '0xf43a43d8f462e2bba7fb76a1359b8722be09cfa9' as `0x${string}`, // Token to Buy
+  TOKEN_CREATOR: (process.env.TOKEN_CREATOR) as `0x${string}`, // Token to Buy
   TOKEN_ZORA: '0x1111111111166b7fe7bd91427724b487980afc69' as `0x${string}`, // Token used to pay (Protocol Rewards)
   BURN_ADDRESS: '0x000000000000000000000000000000000000dEaD' as `0x${string}`,
   BASE_ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as `0x${string}`,

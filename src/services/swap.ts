@@ -188,7 +188,7 @@ export class SwapService {
 
         console.log({
           sellToken: CONFIG.TOKEN_ZORA,
-          buyToken: CONFIG.TOKEN_LOST_MIDAS,
+          buyToken: CONFIG.TOKEN_CREATOR,
           sellAmount: sellAmountBigInt.toString(),
           takerAddress: CONFIG.CREATOR_ADDRESS, // Swap taker is now the Smart Wallet
       });
@@ -203,7 +203,7 @@ export class SwapService {
             params: {
                 chainId: 8453,
                 sellToken: CONFIG.TOKEN_ZORA,
-                buyToken: CONFIG.TOKEN_LOST_MIDAS,
+                buyToken: CONFIG.TOKEN_CREATOR,
                 sellAmount: sellAmountBigInt.toString(),
                 taker: CONFIG.CREATOR_ADDRESS // Smart Wallet Address
             }
@@ -289,7 +289,7 @@ export class SwapService {
 
                 while (retries > 0) {
                     balance = await this.publicClient.readContract({
-                        address: CONFIG.TOKEN_LOST_MIDAS,
+                        address: CONFIG.TOKEN_CREATOR,
                         abi: ERC20_ABI,
                         functionName: 'balanceOf',
                         args: [CONFIG.CREATOR_ADDRESS] // Check Smart Wallet Balance
@@ -312,7 +312,7 @@ export class SwapService {
                             args: [CONFIG.BURN_ADDRESS, balance]
                         });
                         const burnHash = await this.executeViaSmartWallet(
-                            CONFIG.TOKEN_LOST_MIDAS,
+                            CONFIG.TOKEN_CREATOR,
                             0n,
                             burnData
                         );
@@ -325,7 +325,7 @@ export class SwapService {
                         args: [CONFIG.BURN_ADDRESS, buyAmountBigInt]
                     });
                     const burnHash = await this.executeViaSmartWallet(
-                        CONFIG.TOKEN_LOST_MIDAS,
+                        CONFIG.TOKEN_CREATOR,
                         0n,
                         burnData
                     );

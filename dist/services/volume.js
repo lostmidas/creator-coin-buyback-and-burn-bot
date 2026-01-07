@@ -58,10 +58,10 @@ class VolumeService {
     }
     async getFallbackCoin() {
         try {
-            const metadata = await this.alchemy.core.getTokenMetadata(config_1.CONFIG.TOKEN_LOST_MIDAS);
+            const metadata = await this.alchemy.core.getTokenMetadata(config_1.CONFIG.TOKEN_CREATOR);
             return [
                 {
-                    address: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                    address: config_1.CONFIG.TOKEN_CREATOR,
                     name: metadata.name || 'Lost Midas',
                     symbol: metadata.symbol || 'LM'
                 }
@@ -70,7 +70,7 @@ class VolumeService {
         catch (e) {
             return [
                 {
-                    address: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                    address: config_1.CONFIG.TOKEN_CREATOR,
                     name: 'Lost Midas',
                     symbol: 'LM'
                 }

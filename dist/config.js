@@ -13,7 +13,7 @@ exports.CONFIG = {
         (process.env.ALCHEMY_API_KEY ? `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY.replace(/https?:\/\/.*\/v2\//, '')}` : 'https://mainnet.base.org'),
     // Wallets & Tokens
     CREATOR_ADDRESS: '0xd0dfa0a873e5bcb1b52d42866042ef2859558985',
-    TOKEN_LOST_MIDAS: '0xf43a43d8f462e2bba7fb76a1359b8722be09cfa9', // Token to Buy
+    TOKEN_CREATOR: '0xf43a43d8f462e2bba7fb76a1359b8722be09cfa9', // Token to Buy
     TOKEN_ZORA: '0x1111111111166b7fe7bd91427724b487980afc69', // Token used to pay (Protocol Rewards)
     BURN_ADDRESS: '0x000000000000000000000000000000000000dEaD',
     BASE_ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',

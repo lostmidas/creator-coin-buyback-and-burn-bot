@@ -117,7 +117,7 @@ class SwapService {
             }
             console.log({
                 sellToken: config_1.CONFIG.TOKEN_ZORA,
-                buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                buyToken: config_1.CONFIG.TOKEN_CREATOR,
                 sellAmount: sellAmountBigInt.toString(),
                 takerAddress: this.account.address,
             });
@@ -130,7 +130,7 @@ class SwapService {
                 params: {
                     chainId: 8453,
                     sellToken: config_1.CONFIG.TOKEN_ZORA,
-                    buyToken: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                    buyToken: config_1.CONFIG.TOKEN_CREATOR,
                     sellAmount: sellAmountBigInt.toString(),
                     taker: this.account.address
                 }
@@ -181,7 +181,7 @@ class SwapService {
                 console.log(`Burning ${buyAmountBigInt} $LOSTMIDAS...`);
                 if (!dryRun) {
                     const burnHash = await this.walletClient.writeContract({
-                        address: config_1.CONFIG.TOKEN_LOST_MIDAS,
+                        address: config_1.CONFIG.TOKEN_CREATOR,
                         abi: ERC20_ABI,
                         functionName: 'transfer',
                         args: [config_1.CONFIG.BURN_ADDRESS, buyAmountBigInt]
