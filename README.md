@@ -2,7 +2,7 @@
 
 ![Lost Midas Mechanism](./assets/github-repo-cover-image.png)
 
-The Creator Coin Buyback & Burn Script is a revenue-backed automation system designed to reinforce the value of a creator coin. It uses trading activity from individual content coins on Zora to periodically buy back and burn the creator coin. This incentivizes deeper engagement, aligns creator and holder interests, and can create a self-sustaining tokenomics flywheel.
+The Creator Coin Buyback and Burn Script is a revenue-backed automation system designed to reinforce the value of a creator coin. It uses trading activity from individual content coins on Zora to periodically buy back and burn the creator coin. This incentivizes deeper engagement, aligns creator and holder interests, and can create a self-sustaining tokenomics flywheel.
 
 The system runs off-chain via a script that monitors trading data, computes eligible buyback amounts using a configurable tiered formula, and executes swaps and burns transparently.
 
