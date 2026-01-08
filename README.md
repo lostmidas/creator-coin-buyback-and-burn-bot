@@ -1,4 +1,4 @@
-# 🪙 Creator Coin Buyback and Burn Script
+# 🪙 Creator Coin Buyback and Burn Bot
 
 ![Lost Midas Mechanism](./assets/github-repo-cover-image.png)
 
@@ -25,8 +25,8 @@ The Creator Coin Buyback and Burn Bot is an off-chain script that uses trading f
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/lostmidas/creator-coin-buyback-and-burn-script
-cd creator-coin-buyback-and-burn-script
+git clone https://github.com/lostmidas/creator-coin-buyback-and-burn-bot
+cd creator-coin-buyback-and-burn-bot
 npm install
 ```
 
