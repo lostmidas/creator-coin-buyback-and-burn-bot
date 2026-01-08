@@ -7,9 +7,9 @@ The Creator Coin Buyback and Burn Bot is an off-chain script that uses trading f
 ## 🌟 How It Works
 
 1.  **Monitors Volume:** Tracks the trading volume of your content coins on Zora.
-2.  **Claims Rewards:** Automatically claims your earned Protocol Rewards (ETH) from Zora.
-3.  **Buys Back:** Uses those rewards to buy your Creator Coin on the open market.
-4.  **Burns:** Sends the bought tokens to a burn address (reducing supply) or a treasury.
+2.  **Claims Rewards:** Automatically claims your earned Protocol Rewards ($ZORA) from Zora.
+3.  **Buys Back:** Uses those rewards to buy your creator coin on the open market.
+4.  **Burns:** Sends the bought coins to a burn address (reducing supply) or a treasury wallet (configurable).
 
 ---
 
@@ -44,7 +44,7 @@ cp .env.example .env
     **Never commit this file. This key controls an owner wallet for your account.**
 *   `CREATOR_ADDRESS`: Your **Zora wallet address** (find this on your Zora profile settings).
 *   `TOKEN_CREATOR`: The contract address of the creator coin you want to buy.
-*   `TOKEN_ZORA`: Keep default (Reward token address).
+*   `TOKEN_ZORA`: Keep default (reward address).
 *   `ALCHEMY_API_KEY` / `CODEX_API_KEY`: Get free keys from [Alchemy](https://www.alchemy.com/) and [Codex](https://codex.io/).
 
 ### 4. ⚡️ Important: Authorize Your Bot
@@ -92,7 +92,7 @@ To keep the flywheel spinning, set this up to run daily using a cron job or a pr
 Edit `src/config.ts` to tweak:
 *  **Tiers:** Configure volume bands and buyback percentages  
   _(e.g. low volume = 10% of rewards, higher volume = 30–50% of rewards)_
-* **Burn vs Treasury:** Change `BURN_ADDRESS` to your treasury wallet if you prefer to keep the tokens.
+* **Burn vs Treasury:** Change `BURN_ADDRESS` to your treasury wallet if you prefer to keep the coins.
 
 ---
 
