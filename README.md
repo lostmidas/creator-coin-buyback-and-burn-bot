@@ -2,9 +2,7 @@
 
 ![Lost Midas Mechanism](./assets/github-repo-cover-image.png)
 
-The Creator Coin Buyback and Burn Script is a revenue-backed automation system designed to reinforce the value of a creator coin. It uses trading activity from individual content coins on Zora to periodically buy back and burn the creator coin. This incentivizes deeper engagement, aligns creator and holder interests, and can create a self-sustaining tokenomics flywheel.
-
-The system runs off-chain via a script that monitors trading data, computes eligible buyback amounts using a configurable tiered formula, and executes swaps and burns transparently.
+The Creator Coin Buyback and Burn Bot is an off-chain script that uses trading fees from your Zora content coins to automatically buy back and burn your creator coin. It watches trading activity, calculates how much to spend using a configurable tiered formula, then runs swaps onchain through your **Zora wallet** (Smart Wallet) and sends the purchased coins to a burn address.
 
 ## 🌟 How It Works
 
@@ -13,8 +11,6 @@ The system runs off-chain via a script that monitors trading data, computes elig
 3.  **Buys Back:** Uses those rewards to buy your Creator Coin on the open market.
 4.  **Burns:** Sends the bought tokens to a burn address (reducing supply) or a treasury.
 
-**It runs entirely on-chain using your own Zora Smart Wallet.**
-
 ---
 
 ## 🛠️ Setup Guide
@@ -22,7 +18,7 @@ The system runs off-chain via a script that monitors trading data, computes elig
 ### 1. Prerequisites
 *   **Node.js** (v18+)
 *   A **Zora Creator Account** (with rewards to claim!)
-*   A fresh **"Bot Wallet"** (Coinbase, MetaMask, Rainbow, etc.) with ~$5 USD of ETH on Base network.
+*   **A Funded Wallet:** You need the Private Key of your **Privy wallet address** (which is an **Owner** of your Zora wallet address). It needs ~$5 USD of ETH on Base to pay for gas.
 
 ### 2. Installation
 
@@ -44,27 +40,27 @@ cp .env.example .env
 
 **Fill in the following values:**
 
-*   `PRIVATE_KEY`: The private key of your **Privy wallet addresst** (NOT your main Zora wallet).
-*   `CREATOR_ADDRESS`: Your Zora Creator Address (find this on your Zora profile).
+*   `PRIVATE_KEY`: The private key of your **Privy wallet address** (NOT your Zora wallet address).
+    **Never commit this file. This key controls an owner wallet for your account.**
+*   `CREATOR_ADDRESS`: Your **Zora wallet address** (find this on your Zora profile settings).
 *   `TOKEN_CREATOR`: The contract address of the creator coin you want to buy.
 *   `TOKEN_ZORA`: Keep default (Reward token address).
 *   `ALCHEMY_API_KEY` / `CODEX_API_KEY`: Get free keys from [Alchemy](https://www.alchemy.com/) and [Codex](https://codex.io/).
 
 ### 4. ⚡️ Important: Authorize Your Bot
 
-Your Zora account is likely a "Smart Wallet". You must authorize your Privy Wallet to execute trades on its behalf.
+Your **Zora wallet** is a Smart Account. You must authorize your **Privy wallet** to execute trades on its behalf.
 
 1.  **Export your Privy Key:**
     *   Go to your Zora settings.
-    *   Export the "Privy Wallet" private key.
-    *   **Check:** Does this exported address match your `CREATOR_ADDRESS`?
-        *   **YES?** Use this key as `PRIVATE_KEY` in `.env`. You are done!
-        *   **NO?** (Most likely) Proceed to step 2.
+    *   Find the **"Privy wallet address"** section.
+    *   Click **"Export privy wallet"** to get your private key.
+    *   **Check:** Your exported **Privy wallet address** (EOA) will be DIFFERENT from your **Zora wallet address** (Smart Contract). This is normal. The script uses the Privy key to control the Zora wallet.
 
 2.  **Verify Ownership:**
-    *   If your Creator Address is a Smart Contract (starts with `0x...`), your exported Privy key is likely already an **Owner**.
-    *   The script automatically detects this and will route transactions through your Smart Wallet.
-    *   **Just ensure your Privy Wallet (the one in `.env`) has a small amount of ETH on Base for gas.**
+    *   The script automatically detects that your **Privy wallet** is an owner of your **Zora wallet**.
+    *   It will route transactions through your Zora wallet to use its accumulated rewards.
+    *   **Just ensure your Privy wallet address (the one in `.env`) has a small amount of ETH on Base for gas.**
 
 ### 5. Run It!
 
@@ -94,8 +90,9 @@ To keep the flywheel spinning, set this up to run daily using a cron job or a pr
 ## ⚙️ Customization
 
 Edit `src/config.ts` to tweak:
-*   **Tiers:** Change the buyback % based on volume milestones.
-*   **Burn vs Treasury:** Change `BURN_ADDRESS` to your treasury wallet if you prefer to keep the tokens.
+*  **Tiers:** Configure volume bands and buyback percentages  
+  _(e.g. low volume = 10% of rewards, higher volume = 30–50% of rewards)_
+* **Burn vs Treasury:** Change `BURN_ADDRESS` to your treasury wallet if you prefer to keep the tokens.
 
 ---
 
@@ -104,4 +101,3 @@ Edit `src/config.ts` to tweak:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 **Disclaimer:** This software is provided "as is". Use at your own risk. Always test with small amounts first.
-
